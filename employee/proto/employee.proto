@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package employee;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/asqat/mgid/employee";
+
+service EmployeeService {
+  rpc EmployeesSort(Filter) returns (Employees) {}
+  rpc TheOldest(google.protobuf.Empty) returns (Employee) {}
+  rpc TheRichest(google.protobuf.Empty) returns (Employee) {}
+  rpc MeanSalary(google.protobuf.Empty) returns (Salary) {}
+  rpc MedianSalary(google.protobuf.Empty) returns (Salary) {}
+}
+
+message Filter {
+  string field = 1;
+  bool asc = 2;
+}
+
+message Employees {
+  repeated Employee employees = 1;
+}
+
+message Employee {
+  string name = 1;
+  string job = 2;
+  double salary = 3;
+  uint64 age = 4;
+}
+
+message Salary {
+  double value = 1;
+}
+
