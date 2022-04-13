@@ -19,32 +19,18 @@ import (
 )
 
 func main() {
-	t1 := encoder.Template{
-		Type: 1,
-		Result: []string{
-			"res1", "res2", "res3",
-		},
-	}
-	enc, err := encoder.Encode(t1)
+	encoded, err := encoder.Encode(1, []string{"res1", "res2", "res3"})
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(string(enc)) // out: {"type":1,"result":["res1","res2","res3"]}
+	fmt.Println(string(encoded)) // out: {"type":1,"result":["res1","res2","res3"]}
 
-	t2 := encoder.Template{
-		Type: 2,
-		Result: map[string]string{
-			"0": "res1",
-			"1": "res2",
-			"2": "res3",
-		},
-	}
-	enc, err = encoder.Encode(t2)
+	encoded, err = encoder.Encode(2, []string{"res1", "res2", "res3"})
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(string(enc)) // out: {"type":2,"result":{"0":"res1","1":"res2","2":"res3"}}
+	fmt.Println(string(encoded)) // // out: {"type":2,"result":{"0":"res1","1":"res2","2":"res3"}}
 }
 ```
