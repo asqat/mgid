@@ -2,21 +2,24 @@ syntax = "proto3";
 
 package employee;
 
-import "google/protobuf/empty.proto";
-
 option go_package = "github.com/asqat/mgid/employee";
 
 service EmployeeService {
   rpc EmployeesSort(Filter) returns (Employees) {}
-  rpc TheOldest(google.protobuf.Empty) returns (Employee) {}
-  rpc TheRichest(google.protobuf.Empty) returns (Employee) {}
-  rpc MeanSalary(google.protobuf.Empty) returns (Salary) {}
-  rpc MedianSalary(google.protobuf.Empty) returns (Salary) {}
+  rpc TheOldest(Imitator) returns (Employee) {}
+  rpc TheRichest(Imitator) returns (Employee) {}
+  rpc MeanSalary(Imitator) returns (Salary) {}
+  rpc MedianSalary(Imitator) returns (Salary) {}
 }
 
 message Filter {
   string field = 1;
   bool asc = 2;
+  Imitator imitator = 3;
+}
+
+message Imitator {
+  bool isLongLoad = 1;
 }
 
 message Employees {

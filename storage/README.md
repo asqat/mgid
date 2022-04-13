@@ -33,6 +33,18 @@ go test -bench=BenchmarkMapStore
 
 ### Результат на Intel(R) Core(TM) i9-10900 CPU @ 2.80GHz:
 ```
-BenchmarkMapStore_Write-20       3867932               307.6 ns/op            56 B/op          3 allocs/op
-BenchmarkMapStore_Read-20       294730365                3.984 ns/op           0 B/op          0 allocs/op
+# Длина ключа 18 символов
+BenchmarkMapStore_Write_18-20             551745              2401 ns/op             304 B/op          7 allocs/op
+
+# Длина ключа 1000 символов
+BenchmarkMapStore_Write_1000-20            15544             83077 ns/op            5333 B/op          7 allocs/op
+
+# Каждая итерация содержит 100 чтения
+BenchmarkMapStore_Read_100-20            2456925               460.7 ns/op             0 B/op          0 allocs/op
+
+# Каждая итерация содержит 10000 чтения
+BenchmarkMapStore_Read_10000-20            24722             48765 ns/op               0 B/op          0 allocs/op
+
+# Каждая итерация содержит 1000000 чтения
+BenchmarkMapStore_Read_1000000-20            102          11613822 ns/op             100 B/op          0 allocs/op
 ```

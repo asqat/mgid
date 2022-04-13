@@ -3,9 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/asqat/mgid/employee/pkg/model"
-	"math/rand"
 	"sort"
-	"time"
 )
 
 var allowedFields = map[string]struct{}{
@@ -50,11 +48,12 @@ func (employees Employees) Sort(key string, asc bool) (Employees, error) {
 			}
 			return employees[i].Age > employees[j].Age
 		default:
+			if asc {
+				return employees[i].Name < employees[j].Name
+			}
 			return employees[i].Name > employees[j].Name
 		}
 	})
-
-	time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 
 	return employees, nil
 }
@@ -71,7 +70,6 @@ func (employees Employees) TheOldest() (*model.Employee, error) {
 		return nil, err
 	}
 
-	time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 	return &all[0], nil
 }
 
@@ -87,7 +85,6 @@ func (employees Employees) TheRichest() (*model.Employee, error) {
 		return nil, err
 	}
 
-	time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 	return &all[0], nil
 }
 
@@ -103,7 +100,6 @@ func (employees Employees) AverageSalary() float64 {
 		salaries += employee.Salary
 	}
 
-	time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 	return salaries / float64(len(employees))
 }
 
@@ -124,6 +120,5 @@ func (employees Employees) MedianSalary() float64 {
 
 	n := len(sal)
 
-	time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 	return (sal[n/2] + sal[(n-1)/2]) / 2
 }

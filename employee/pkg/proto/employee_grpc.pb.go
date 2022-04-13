@@ -4,7 +4,6 @@ package employee
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,10 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EmployeeServiceClient interface {
 	EmployeesSort(ctx context.Context, in *Filter, opts ...grpc.CallOption) (*Employees, error)
-	TheOldest(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Employee, error)
-	TheRichest(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Employee, error)
-	MeanSalary(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Salary, error)
-	MedianSalary(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Salary, error)
+	TheOldest(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Employee, error)
+	TheRichest(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Employee, error)
+	MeanSalary(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Salary, error)
+	MedianSalary(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Salary, error)
 }
 
 type employeeServiceClient struct {
@@ -43,7 +42,7 @@ func (c *employeeServiceClient) EmployeesSort(ctx context.Context, in *Filter, o
 	return out, nil
 }
 
-func (c *employeeServiceClient) TheOldest(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Employee, error) {
+func (c *employeeServiceClient) TheOldest(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Employee, error) {
 	out := new(Employee)
 	err := c.cc.Invoke(ctx, "/employee.EmployeeService/TheOldest", in, out, opts...)
 	if err != nil {
@@ -52,7 +51,7 @@ func (c *employeeServiceClient) TheOldest(ctx context.Context, in *empty.Empty, 
 	return out, nil
 }
 
-func (c *employeeServiceClient) TheRichest(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Employee, error) {
+func (c *employeeServiceClient) TheRichest(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Employee, error) {
 	out := new(Employee)
 	err := c.cc.Invoke(ctx, "/employee.EmployeeService/TheRichest", in, out, opts...)
 	if err != nil {
@@ -61,7 +60,7 @@ func (c *employeeServiceClient) TheRichest(ctx context.Context, in *empty.Empty,
 	return out, nil
 }
 
-func (c *employeeServiceClient) MeanSalary(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Salary, error) {
+func (c *employeeServiceClient) MeanSalary(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Salary, error) {
 	out := new(Salary)
 	err := c.cc.Invoke(ctx, "/employee.EmployeeService/MeanSalary", in, out, opts...)
 	if err != nil {
@@ -70,7 +69,7 @@ func (c *employeeServiceClient) MeanSalary(ctx context.Context, in *empty.Empty,
 	return out, nil
 }
 
-func (c *employeeServiceClient) MedianSalary(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Salary, error) {
+func (c *employeeServiceClient) MedianSalary(ctx context.Context, in *Imitator, opts ...grpc.CallOption) (*Salary, error) {
 	out := new(Salary)
 	err := c.cc.Invoke(ctx, "/employee.EmployeeService/MedianSalary", in, out, opts...)
 	if err != nil {
@@ -84,10 +83,10 @@ func (c *employeeServiceClient) MedianSalary(ctx context.Context, in *empty.Empt
 // for forward compatibility
 type EmployeeServiceServer interface {
 	EmployeesSort(context.Context, *Filter) (*Employees, error)
-	TheOldest(context.Context, *empty.Empty) (*Employee, error)
-	TheRichest(context.Context, *empty.Empty) (*Employee, error)
-	MeanSalary(context.Context, *empty.Empty) (*Salary, error)
-	MedianSalary(context.Context, *empty.Empty) (*Salary, error)
+	TheOldest(context.Context, *Imitator) (*Employee, error)
+	TheRichest(context.Context, *Imitator) (*Employee, error)
+	MeanSalary(context.Context, *Imitator) (*Salary, error)
+	MedianSalary(context.Context, *Imitator) (*Salary, error)
 	mustEmbedUnimplementedEmployeeServiceServer()
 }
 
@@ -98,16 +97,16 @@ type UnimplementedEmployeeServiceServer struct {
 func (UnimplementedEmployeeServiceServer) EmployeesSort(context.Context, *Filter) (*Employees, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EmployeesSort not implemented")
 }
-func (UnimplementedEmployeeServiceServer) TheOldest(context.Context, *empty.Empty) (*Employee, error) {
+func (UnimplementedEmployeeServiceServer) TheOldest(context.Context, *Imitator) (*Employee, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TheOldest not implemented")
 }
-func (UnimplementedEmployeeServiceServer) TheRichest(context.Context, *empty.Empty) (*Employee, error) {
+func (UnimplementedEmployeeServiceServer) TheRichest(context.Context, *Imitator) (*Employee, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TheRichest not implemented")
 }
-func (UnimplementedEmployeeServiceServer) MeanSalary(context.Context, *empty.Empty) (*Salary, error) {
+func (UnimplementedEmployeeServiceServer) MeanSalary(context.Context, *Imitator) (*Salary, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MeanSalary not implemented")
 }
-func (UnimplementedEmployeeServiceServer) MedianSalary(context.Context, *empty.Empty) (*Salary, error) {
+func (UnimplementedEmployeeServiceServer) MedianSalary(context.Context, *Imitator) (*Salary, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MedianSalary not implemented")
 }
 func (UnimplementedEmployeeServiceServer) mustEmbedUnimplementedEmployeeServiceServer() {}
@@ -142,7 +141,7 @@ func _EmployeeService_EmployeesSort_Handler(srv interface{}, ctx context.Context
 }
 
 func _EmployeeService_TheOldest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(Imitator)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -154,13 +153,13 @@ func _EmployeeService_TheOldest_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/employee.EmployeeService/TheOldest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmployeeServiceServer).TheOldest(ctx, req.(*empty.Empty))
+		return srv.(EmployeeServiceServer).TheOldest(ctx, req.(*Imitator))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _EmployeeService_TheRichest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(Imitator)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -172,13 +171,13 @@ func _EmployeeService_TheRichest_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/employee.EmployeeService/TheRichest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmployeeServiceServer).TheRichest(ctx, req.(*empty.Empty))
+		return srv.(EmployeeServiceServer).TheRichest(ctx, req.(*Imitator))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _EmployeeService_MeanSalary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(Imitator)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -190,13 +189,13 @@ func _EmployeeService_MeanSalary_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/employee.EmployeeService/MeanSalary",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmployeeServiceServer).MeanSalary(ctx, req.(*empty.Empty))
+		return srv.(EmployeeServiceServer).MeanSalary(ctx, req.(*Imitator))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _EmployeeService_MedianSalary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(Imitator)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -208,7 +207,7 @@ func _EmployeeService_MedianSalary_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/employee.EmployeeService/MedianSalary",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmployeeServiceServer).MedianSalary(ctx, req.(*empty.Empty))
+		return srv.(EmployeeServiceServer).MedianSalary(ctx, req.(*Imitator))
 	}
 	return interceptor(ctx, in, info, handler)
 }

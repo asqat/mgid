@@ -4,11 +4,8 @@ import (
 	"context"
 	employee "github.com/asqat/mgid/employee/pkg/proto"
 	"github.com/asqat/mgid/employee/pkg/service"
-	"github.com/golang/protobuf/ptypes/empty"
-)
-
-const (
-	requestTimeout = 10 // sec
+	"math/rand"
+	"time"
 )
 
 type server struct {
@@ -31,10 +28,14 @@ func (s *server) EmployeesSort(ctx context.Context, filter *employee.Filter) (*e
 		epms.Employees = append(epms.Employees, emp)
 	}
 
+	if filter.Imitator.IsLongLoad {
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+	}
+
 	return epms, nil
 }
 
-func (s *server) TheOldest(ctx context.Context, _ *empty.Empty) (*employee.Employee, error) {
+func (s *server) TheOldest(ctx context.Context, imitator *employee.Imitator) (*employee.Employee, error) {
 	oldest, err := s.data.TheOldest()
 	if err != nil {
 		return nil, err
@@ -46,9 +47,13 @@ func (s *server) TheOldest(ctx context.Context, _ *empty.Empty) (*employee.Emplo
 		Salary: oldest.Salary,
 		Age:    uint64(oldest.Age),
 	}
+
+	if imitator.GetIsLongLoad() {
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+	}
 	return emp, nil
 }
-func (s *server) TheRichest(ctx context.Context, _ *empty.Empty) (*employee.Employee, error) {
+func (s *server) TheRichest(ctx context.Context, imitator *employee.Imitator) (*employee.Employee, error) {
 	richest, err := s.data.TheRichest()
 	if err != nil {
 		return nil, err
@@ -60,19 +65,32 @@ func (s *server) TheRichest(ctx context.Context, _ *empty.Empty) (*employee.Empl
 		Salary: richest.Salary,
 		Age:    uint64(richest.Age),
 	}
+
+	if imitator.GetIsLongLoad() {
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+	}
 	return emp, nil
 }
-func (s *server) MeanSalary(ctx context.Context, _ *empty.Empty) (*employee.Salary, error) {
+func (s *server) MeanSalary(ctx context.Context, imitator *employee.Imitator) (*employee.Salary, error) {
 	mean := s.data.AverageSalary()
 	salary := &employee.Salary{
 		Value: mean,
 	}
+
+	if imitator.GetIsLongLoad() {
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+	}
 	return salary, nil
 }
-func (s *server) MedianSalary(ctx context.Context, _ *empty.Empty) (*employee.Salary, error) {
+func (s *server) MedianSalary(ctx context.Context, imitator *employee.Imitator) (*employee.Salary, error) {
 	mean := s.data.MedianSalary()
 	salary := &employee.Salary{
 		Value: mean,
 	}
+
+	if imitator.GetIsLongLoad() {
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+	}
+
 	return salary, nil
 }

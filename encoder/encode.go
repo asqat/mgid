@@ -3,7 +3,7 @@ package encoder
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"strconv"
 )
 
 const (
@@ -12,7 +12,6 @@ const (
 )
 
 var (
-	ErrInterfaceCast   = errors.New("cannot cast")
 	ErrUnsupportedType = errors.New("unsupported type")
 )
 
@@ -21,46 +20,33 @@ type Template struct {
 	Result interface{} `json:"result"`
 }
 
-func Encode(v interface{}) (encoded []byte, err error) {
-	template, ok := v.(Template)
-	if !ok {
-		return nil, fmt.Errorf("%v %T to %T type", ErrInterfaceCast, v, &Template{})
-	}
-
-	switch template.Type {
+func Encode(encType int, data []string) (encoded []byte, err error) {
+	t := &Template{}
+	switch encType {
 	case ArrType:
-		encoded, err = arrTemplateEncoder(template)
+		t = arrTemplateEncoder(data)
 	case MapType:
-		encoded, err = mapTemplateEncoder(template)
+		t = mapTemplateEncoder(data)
 	default:
 		return nil, ErrUnsupportedType
 	}
-	return
+	return json.Marshal(t)
 }
 
-func arrTemplateEncoder(t Template) (encoded []byte, err error) {
-	arr, ok := t.Result.([]string)
-	if !ok {
-		return nil, fmt.Errorf("arrTemplateEncoder: %v %T to %T type",
-			ErrInterfaceCast,
-			t.Result,
-			[]string{})
+func arrTemplateEncoder(data []string) *Template {
+	return &Template{
+		Type:   ArrType,
+		Result: data,
 	}
-	t.Result = arr
-
-	return json.Marshal(&t)
 }
 
-func mapTemplateEncoder(t Template) (encoded []byte, err error) {
-	m, ok := t.Result.(map[string]string)
-	if !ok {
-		return nil, fmt.Errorf("mapTemplateEncoder: %v %T to %T type",
-			ErrInterfaceCast,
-			t.Result,
-			[]string{},
-		)
+func mapTemplateEncoder(data []string) *Template {
+	m := make(map[string]string, len(data))
+	for i, item := range data {
+		m[strconv.Itoa(i)] = item
 	}
-	t.Result = m
-
-	return json.Marshal(&t)
+	return &Template{
+		Type:   MapType,
+		Result: m,
+	}
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	employee "github.com/asqat/mgid/employee/pkg/proto"
 	"github.com/asqat/mgid/employee/pkg/service"
-	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
 	"log"
@@ -108,6 +107,9 @@ func Test_server_EmployeesSort(t *testing.T) {
 				in1: &employee.Filter{
 					Field: "name",
 					Asc:   true,
+					Imitator: &employee.Imitator{
+						IsLongLoad: false,
+					},
 				},
 			},
 			want: &employee.Employees{
@@ -123,7 +125,34 @@ func Test_server_EmployeesSort(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "EmployeeSort_Test_Desc",
+			name: "EmployeeSort_Test_Asc_LongLoading",
+			fields: struct {
+				UnimplementedEmployeeServiceServer employee.UnimplementedEmployeeServiceServer
+			}{UnimplementedEmployeeServiceServer: employee.UnimplementedEmployeeServiceServer{}},
+			args: args{
+				in0: context.Background(),
+				in1: &employee.Filter{
+					Field: "name",
+					Asc:   true,
+					Imitator: &employee.Imitator{
+						IsLongLoad: true,
+					},
+				},
+			},
+			want: &employee.Employees{
+				Employees: []*employee.Employee{
+					{
+						Name:   "Brian",
+						Job:    "Student",
+						Salary: 2500,
+						Age:    27,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "EmployeeSort_Test_Desc_LongLoading",
 			fields: struct {
 				UnimplementedEmployeeServiceServer employee.UnimplementedEmployeeServiceServer
 			}{UnimplementedEmployeeServiceServer: employee.UnimplementedEmployeeServiceServer{}},
@@ -132,6 +161,9 @@ func Test_server_EmployeesSort(t *testing.T) {
 				in1: &employee.Filter{
 					Field: "name",
 					Asc:   false,
+					Imitator: &employee.Imitator{
+						IsLongLoad: true,
+					},
 				},
 			},
 			want: &employee.Employees{
@@ -178,7 +210,7 @@ func Test_server_TheOldest(t *testing.T) {
 	}
 	type args struct {
 		in0 context.Context
-		emp *empty.Empty
+		emp *employee.Imitator
 	}
 	tests := []struct {
 		name    string
@@ -194,7 +226,32 @@ func Test_server_TheOldest(t *testing.T) {
 			}{UnimplementedEmployeeServiceServer: employee.UnimplementedEmployeeServiceServer{}},
 			args: args{
 				in0: context.Background(),
-				emp: &empty.Empty{},
+				emp: &employee.Imitator{
+					IsLongLoad: false,
+				},
+			},
+			want: &employee.Employees{
+				Employees: []*employee.Employee{
+					{
+						Name:   "Yuri",
+						Job:    "Engineer",
+						Salary: 5000,
+						Age:    49,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "TheOldestEmployee_Test_LongLoading",
+			fields: struct {
+				UnimplementedEmployeeServiceServer employee.UnimplementedEmployeeServiceServer
+			}{UnimplementedEmployeeServiceServer: employee.UnimplementedEmployeeServiceServer{}},
+			args: args{
+				in0: context.Background(),
+				emp: &employee.Imitator{
+					IsLongLoad: true,
+				},
 			},
 			want: &employee.Employees{
 				Employees: []*employee.Employee{
@@ -241,7 +298,7 @@ func Test_server_TheRichest(t *testing.T) {
 	}
 	type args struct {
 		in0 context.Context
-		emp *empty.Empty
+		emp *employee.Imitator
 	}
 	tests := []struct {
 		name    string
@@ -257,7 +314,32 @@ func Test_server_TheRichest(t *testing.T) {
 			}{UnimplementedEmployeeServiceServer: employee.UnimplementedEmployeeServiceServer{}},
 			args: args{
 				in0: context.Background(),
-				emp: &empty.Empty{},
+				emp: &employee.Imitator{
+					IsLongLoad: false,
+				},
+			},
+			want: &employee.Employees{
+				Employees: []*employee.Employee{
+					{
+						Name:   "Rick",
+						Job:    "Engineer",
+						Salary: 6600,
+						Age:    41,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "TheRichestEmployee_Test_LongLoading",
+			fields: struct {
+				UnimplementedEmployeeServiceServer employee.UnimplementedEmployeeServiceServer
+			}{UnimplementedEmployeeServiceServer: employee.UnimplementedEmployeeServiceServer{}},
+			args: args{
+				in0: context.Background(),
+				emp: &employee.Imitator{
+					IsLongLoad: true,
+				},
 			},
 			want: &employee.Employees{
 				Employees: []*employee.Employee{
@@ -301,7 +383,7 @@ func Test_server_TheRichest(t *testing.T) {
 func Test_server_MeanSalary(t *testing.T) {
 	type args struct {
 		in0 context.Context
-		emp *empty.Empty
+		emp *employee.Imitator
 	}
 	tests := []struct {
 		name    string
@@ -313,7 +395,22 @@ func Test_server_MeanSalary(t *testing.T) {
 			name: "MeanSalary_Test",
 			args: args{
 				in0: context.Background(),
-				emp: &empty.Empty{},
+				emp: &employee.Imitator{
+					IsLongLoad: false,
+				},
+			},
+			want: &employee.Salary{
+				Value: 3800,
+			},
+			wantErr: false,
+		},
+		{
+			name: "MeanSalary_Test_LongLoading",
+			args: args{
+				in0: context.Background(),
+				emp: &employee.Imitator{
+					IsLongLoad: true,
+				},
 			},
 			want: &employee.Salary{
 				Value: 3800,
@@ -349,7 +446,7 @@ func Test_server_MeanSalary(t *testing.T) {
 func Test_server_MedianSalary(t *testing.T) {
 	type args struct {
 		in0 context.Context
-		emp *empty.Empty
+		emp *employee.Imitator
 	}
 	tests := []struct {
 		name    string
@@ -361,7 +458,22 @@ func Test_server_MedianSalary(t *testing.T) {
 			name: "MedianSalary_Test",
 			args: args{
 				in0: context.Background(),
-				emp: &empty.Empty{},
+				emp: &employee.Imitator{
+					IsLongLoad: false,
+				},
+			},
+			want: &employee.Salary{
+				Value: 3450,
+			},
+			wantErr: false,
+		},
+		{
+			name: "MedianSalary_Test_LongLoading",
+			args: args{
+				in0: context.Background(),
+				emp: &employee.Imitator{
+					IsLongLoad: true,
+				},
 			},
 			want: &employee.Salary{
 				Value: 3450,
