@@ -47,4 +47,14 @@ BenchmarkMapStore_Read_10000-20            24722             48765 ns/op        
 
 # Каждая итерация содержит 1000000 чтения
 BenchmarkMapStore_Read_1000000-20            102          11613822 ns/op             100 B/op          0 allocs/op
+
+# Каждая итерация содержит 100 вызовов
+BenchmarkMapStore_Inc_100-20            12608088                94.70 ns/op            0 B/op          0 allocs/op
+
+# Каждая итерация содержит 10000 вызовов
+BenchmarkMapStore_Inc_10000-20             99866             17297 ns/op               0 B/op          0 allocs/op
+
+# Каждая итерация содержит 1000000 вызовов
+BenchmarkMapStore_Inc_1000000-20             147           7384234 ns/op              67 B/op          0 allocs/op
+
 ```

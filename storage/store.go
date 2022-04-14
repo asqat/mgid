@@ -7,10 +7,11 @@ import (
 )
 
 type MapStore struct {
-	store    sync.Map
-	lifetime time.Duration
-	size     int64
-	close    chan struct{}
+	store     sync.Map
+	lifetime  time.Duration
+	size      int64
+	close     chan struct{}
+	lastIndex int
 }
 
 type elem struct {
@@ -69,6 +70,19 @@ func (ms *MapStore) Read(key string) (i int, value interface{}) {
 	return elem.index, elem.value
 }
 
+func (ms *MapStore) Inc() (currentVal interface{}) {
+	ms.store.Range(func(key, value interface{}) bool {
+		elem := value.(elem)
+		if elem.index == ms.lastIndex {
+			currentVal = elem.value
+			ms.lastIndex++
+			return false
+		}
+		return true
+	})
+	return
+}
+
 func (ms *MapStore) Size() int {
 	return int(ms.size)
 }
@@ -91,6 +105,7 @@ func (ms *MapStore) Write(key string, value interface{}) {
 
 func (ms *MapStore) Close() {
 	ms.size = 0
+	ms.lastIndex = 0
 	ms.close <- struct{}{}
 	ms.store = sync.Map{}
 }
